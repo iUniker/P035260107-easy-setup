@@ -5,6 +5,7 @@ repo_dir="$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")/.." && pwd -P)"
 version="$(tr -d '[:space:]' < "${repo_dir}/VERSION")"
 output_path="${1:-${repo_dir}/dist-packages/MazerPi-MZP351-Offline-Setup-${version}.zip}"
 output_dir="$(dirname -- "${output_path}")"
+output_name="$(basename -- "${output_path}")"
 package_name="MazerPi-MZP351-Offline-Setup"
 temporary_dir="$(mktemp -d "${TMPDIR:-/tmp}/mzp351-package.XXXXXX")"
 
@@ -14,6 +15,8 @@ cleanup() {
 trap cleanup EXIT
 
 mkdir -p "${output_dir}" "${temporary_dir}/${package_name}/config"
+output_dir="$(cd -- "${output_dir}" && pwd -P)"
+output_path="${output_dir}/${output_name}"
 rm -f -- "${output_path}" "${output_path}.sha256"
 install -m 0755 "${repo_dir}/packaging/offline/INSTALL" "${temporary_dir}/${package_name}/INSTALL"
 install -m 0755 "${repo_dir}/install.sh" "${temporary_dir}/${package_name}/install.sh"
