@@ -13,11 +13,13 @@
 
 网页方式只读写客户自己选中的文件夹，不会上传 SD 卡内容。原 TXT 方式仍保留为售后备用。
 
-## 在线安装（独立新仓库发布后生效）
+## 在线安装（工程测试版）
 
 ```bash
 curl -fsSL https://raw.githubusercontent.com/iUniker/P035260107-easy-setup/main/install.sh | sudo bash -s -- --reboot
 ```
+
+实物验证计划通过前，请只在指定的测试树莓派上运行，不要对客户公布为正式版。
 
 ## 安装器会做什么
 

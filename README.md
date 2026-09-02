@@ -19,16 +19,16 @@ user-selected SD-card boot partition locally. Files are never uploaded.
 
 ## Fast online install on a running Raspberry Pi
 
-For the future public repository, the primary customer flow is one command:
+For the engineering preview, the primary Raspberry Pi flow is one command:
 
 ```bash
 curl -fsSL https://raw.githubusercontent.com/iUniker/P035260107-easy-setup/main/install.sh | sudo bash -s -- --reboot
 ```
 
-This URL will work only after this separate repository has been reviewed and
-published under that exact GitHub name. The command downloads the installer
-over HTTPS, checks the Raspberry Pi and its existing boot configuration, makes
-a timestamped backup, adds only the managed display settings, and reboots.
+The command downloads the installer over HTTPS, checks the Raspberry Pi and its
+existing boot configuration, makes a timestamped backup, adds only the managed
+display settings, and reboots. Do not advertise this as a production release
+until the physical engineering validation plan has passed.
 
 Customers who prefer to inspect code before running it can use:
 

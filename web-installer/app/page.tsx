@@ -479,7 +479,7 @@ export default function Home() {
                 <CardTitle className="flex items-center gap-2 text-lg"><Terminal className="size-5 text-primary" />Run on your Raspberry Pi</CardTitle>
                 <CardDescription className="mt-1">Open Terminal or connect by SSH, then paste this command.</CardDescription>
               </div>
-              <Badge className="mt-2 self-start bg-amber-100 text-amber-900 sm:mt-0" variant="secondary">Available after GitHub publish</Badge>
+              <Badge className="mt-2 self-start bg-amber-100 text-amber-900 sm:mt-0" variant="secondary">Engineering test command</Badge>
             </CardHeader>
             <CardContent className="pt-1">
               <div className="command-box">

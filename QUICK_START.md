@@ -32,8 +32,8 @@ curl -fsSL https://raw.githubusercontent.com/iUniker/P035260107-easy-setup/main/
 
 The Raspberry Pi checks compatibility, preserves the existing operating system
 and settings, creates a timestamped backup, installs the display configuration,
-and reboots. The URL becomes active after the separate setup repository is
-published. Do not run a similar command from an unofficial URL.
+and reboots. During engineering validation, use this command only on designated
+test systems. Do not run a similar command from an unofficial URL.
 
 ### Method B - Install from a downloaded copy
 
