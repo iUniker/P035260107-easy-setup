@@ -30,15 +30,10 @@ For every supported OS:
   published URL uses the reviewed repository and fails closed for HTTP errors.
 - Run the one-command installer twice and confirm the embedded configuration is
   byte-for-byte identical to `config/mzp351hv00tr-kms.txt`.
-- Test the browser installer in current Chrome on Windows 10/11 and macOS.
-- Test the browser installer in current Microsoft Edge on Windows 10/11.
-- In the browser installer, test a correct `bootfs` partition, a non-boot
-  folder, a read-only card, missing overlays, nested includes, every documented
-  conflict, repeat install, uninstall, cancellation, and safe eject.
-- Confirm Safari and Firefox show the Chrome/Edge requirement instead of an
-  enabled SD-card write button.
-- Test offline installation from Windows.
-- Test offline installation from macOS or Linux.
+- Download the public ZIP on another device, transfer it to each supported Pi,
+  extract it, and run `sudo bash install.sh --reboot` without network access.
+- Confirm the online command and downloaded ZIP install byte-for-byte identical
+  managed display configuration.
 - Confirm the installer creates a unique timestamped backup.
 - Run the installer twice and confirm only one managed block exists.
 - Confirm unrelated settings and included files remain byte-for-byte unchanged.
@@ -51,10 +46,6 @@ For every supported OS:
 - Test missing and circular include files.
 - Test LF, CRLF, UTF-8 comments, and a `config.txt` with no final newline.
 - Test `os_prefix` and `overlay_prefix` layouts.
-- On Windows, connect two Raspberry Pi boot volumes and confirm the tool refuses
-  to choose automatically.
-- On Windows, intentionally select the wrong drive and confirm the displayed
-  drive letter, label, capacity, and `INSTALL` prompt prevent accidental writes.
 - Run `diagnose.sh` and verify that it contains no credentials or user data.
 
 ## Hardware and display tests
@@ -100,11 +91,8 @@ A release candidate passes only when:
   managed fragment.
 - Install, repeated install, uninstall, and backup recovery all pass.
 - Every known conflict produces an understandable English error before writing.
-- Windows installation has been tested on Windows 10 and Windows 11.
-- SmartScreen, antivirus, and corporate PowerShell restrictions have a tested
-  customer-safe path; do not instruct customers to disable security software.
 - The release ZIP has a version number and published SHA-256 checksum.
-- The English Quick Start matches the exact filenames and user interface.
+- The English Quick Start matches the online command and downloaded ZIP.
 - Engineering signs off on display timing, touch calibration, backlight, power,
   and GPIO claims.
 

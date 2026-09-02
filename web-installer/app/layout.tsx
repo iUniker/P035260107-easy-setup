@@ -13,6 +13,7 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
+  metadataBase: new URL('https://mazerpi-mzp351-setup.kiki19890901.chatgpt.site'),
   title: 'MazerPi 3.51-inch LCD Setup',
   description:
     'Install the MazerPi MZP351HV00TR display without replacing your Raspberry Pi operating system.',
@@ -21,12 +22,21 @@ export const metadata: Metadata = {
     description:
       'Keep your Raspberry Pi system and add the display in minutes.',
     type: 'website',
+    images: [
+      {
+        url: '/og.png',
+        width: 1200,
+        height: 630,
+        alt: 'MazerPi 3.51-inch LCD setup: install online or from ZIP',
+      },
+    ],
   },
   twitter: {
-    card: 'summary',
+    card: 'summary_large_image',
     title: 'MazerPi 3.51-inch LCD Setup',
     description:
       'Keep your Raspberry Pi system and add the display in minutes.',
+    images: ['/og.png'],
   },
 };
 

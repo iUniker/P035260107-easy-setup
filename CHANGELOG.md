@@ -1,5 +1,12 @@
 # Changelog
 
+## 0.4.0-engineering.1
+
+- Reduced the customer installation choices to two: one-command online setup
+  and an extracted ZIP run directly on the Raspberry Pi.
+- Removed the browser SD-card writer and Windows PowerShell customer tools.
+- Simplified the English setup page and Quick Start around the same two flows.
+
 ## 0.3.0-engineering.1
 
 - Added a self-contained online installation path for a one-command customer
