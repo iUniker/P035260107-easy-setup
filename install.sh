@@ -6,8 +6,11 @@ readonly FRAGMENT_NAME="mzp351hv00tr.txt"
 readonly MARKER_BEGIN="# BEGIN MZP351HV00TR MANAGED CONFIG"
 readonly MARKER_END="# END MZP351HV00TR MANAGED CONFIG"
 
-script_dir="$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")" && pwd -P)"
-source_fragment="${script_dir}/config/mzp351hv00tr-kms.txt"
+script_dir=""
+if [[ -n "${BASH_SOURCE[0]:-}" && -f "${BASH_SOURCE[0]}" ]]; then
+  script_dir="$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")" && pwd -P)"
+fi
+source_fragment="${script_dir:+${script_dir}/config/mzp351hv00tr-kms.txt}"
 boot_dir=""
 reboot_after=0
 force_checks=0
@@ -61,7 +64,7 @@ cleanup() {
 trap cleanup EXIT
 
 prepare_source_fragment() {
-  if [[ -f "${source_fragment}" ]]; then
+  if [[ -n "${source_fragment}" && -f "${source_fragment}" ]]; then
     return
   fi
 

@@ -152,4 +152,11 @@ cp "${repo_dir}/install.sh" "${standalone_dir}/install.sh"
 [[ -f "${fixture_online}/mzp351hv00tr.txt" ]] || fail "Standalone online installer did not create its embedded fragment"
 cmp "${repo_dir}/config/mzp351hv00tr-kms.txt" "${fixture_online}/mzp351hv00tr.txt" || fail "Embedded online configuration differs from the reviewed fragment"
 
+fixture_pipe="${test_root}/boot-pipe"
+make_boot_fixture "${fixture_pipe}"
+printf 'dtparam=audio=on\n' > "${fixture_pipe}/config.txt"
+bash -s -- --boot-dir "${fixture_pipe}" --yes < "${repo_dir}/install.sh" >/dev/null
+[[ -f "${fixture_pipe}/mzp351hv00tr.txt" ]] || fail "Piped online installer did not create its embedded fragment"
+cmp "${repo_dir}/config/mzp351hv00tr-kms.txt" "${fixture_pipe}/mzp351hv00tr.txt" || fail "Piped online configuration differs from the reviewed fragment"
+
 printf 'All installer tests passed.\n'
