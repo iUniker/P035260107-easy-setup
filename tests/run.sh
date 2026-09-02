@@ -10,6 +10,13 @@ fail() {
   exit 1
 }
 
+# Regression test: online mode must not inherit the failed `offline_mode` test
+# as the function's return status when the installer is running with `set -e`.
+confirm_function="$(sed -n '/^confirm_offline_target()/,/^}/p' "${repo_dir}/install.sh")"
+if ! bash -c 'set -Eeuo pipefail; eval "$1"; confirm_offline_target' _ "${confirm_function}"; then
+  fail "Online mode exits while skipping offline-target confirmation"
+fi
+
 assert_count() {
   local expected="$1"
   local pattern="$2"

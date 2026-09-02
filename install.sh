@@ -149,7 +149,11 @@ resolve_boot_dir() {
 confirm_offline_target() {
   local answer
 
-  [[ -n "${offline_mode:-}" ]] || return
+  # An unqualified `return` after a failed test inherits that test's status.
+  # With `set -e`, that made normal online installs exit here with status 1.
+  if [[ -z "${offline_mode:-}" ]]; then
+    return 0
+  fi
 
   log "Selected offline boot partition: ${boot_dir}"
   df -h "${boot_dir}" 2>/dev/null | tail -n 1 || true
