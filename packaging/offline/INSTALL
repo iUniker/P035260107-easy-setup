@@ -57,12 +57,11 @@ set -e
 
 if (( status != 0 )); then
   printf '\nSetup stopped without completing. Copy the error above and send it to support.\n' >&2
+  if [[ -t 0 ]]; then
+    read -r -p 'Press Enter to close this window...' _ || true
+  fi
 elif [[ -t 0 ]]; then
   printf '\nSetup finished. The Raspberry Pi should restart automatically.\n'
-fi
-
-if [[ -t 0 ]]; then
-  read -r -p 'Press Enter to close this window...' _ || true
 fi
 
 exit "${status}"

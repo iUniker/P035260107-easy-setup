@@ -21,15 +21,17 @@ before a production release.
 On a connected Raspberry Pi, open Terminal or connect by SSH and run:
 
 ```bash
-curl -fsSL https://raw.githubusercontent.com/iUniker/P035260107-easy-setup/main/install.sh | sudo bash -s -- --reboot
+curl -fL --retry 3 --retry-all-errors https://raw.githubusercontent.com/iUniker/P035260107-easy-setup/main/install.sh -o ~/mazerpi-mzp351-install.sh && sudo bash ~/mazerpi-mzp351-install.sh --reboot
 ```
 
-The command downloads the installer over HTTPS, checks compatibility, creates a
-timestamped backup, adds only the managed display settings, and reboots.
+The command downloads the complete installer over HTTPS before running it. If
+the transfer is interrupted, the installer does not run. After download, it
+checks compatibility, creates a timestamped backup, adds only the managed
+display settings, and reboots.
 
 ### 2. Downloaded ZIP — no Internet on the Raspberry Pi
 
-[Download the small offline ZIP](https://github.com/iUniker/P035260107-easy-setup/releases/download/v0.4.1-engineering.1/MazerPi-MZP351-Offline-Setup.zip)
+[Download the small offline ZIP](https://github.com/iUniker/P035260107-easy-setup/releases/download/v0.4.2-engineering.1/MazerPi-MZP351-Offline-Setup.zip)
 on any connected device, transfer it to the Raspberry Pi, and extract it.
 
 On Raspberry Pi OS Desktop, double-click `INSTALL` and choose **Execute** or

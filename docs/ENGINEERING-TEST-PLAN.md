@@ -18,6 +18,21 @@ Test the current Raspberry Pi OS release first. Test Bookworm or other releases
 only if they will be listed as supported. Do not infer support from one similar
 distribution.
 
+### Observed test result - 2026-09-02
+
+The following single-unit test is recorded as evidence, not as completion of
+the full release matrix:
+
+- Hardware: Raspberry Pi Zero 2 W Rev 1.0
+- OS: Debian GNU/Linux 13.5 (Trixie)
+- Kernel: 6.18.34+rpt-rpi-v8
+- Online install: passed after the live-system early-exit fix
+- Display after automatic reboot: passed
+- Uninstall and return to the prior boot configuration: passed
+- Offline ZIP reinstall and display after automatic reboot: passed
+- Not yet recorded: userland architecture, firmware version, LCD batch, touch
+  calibration, repeated cold/warm boots, measured timing, and multi-unit tests
+
 ## Software safety tests
 
 For every supported OS:

@@ -4,7 +4,7 @@
 
 安装器不会替换操作系统或内核，不使用 DKMS，也不会修改客户的软件、网络和用户数据。它只启用 Raspberry Pi OS 已经自带的驱动和 Device Tree Overlay。
 
-美国客户使用的说明见 [English Quick Start](QUICK_START.md) 和 [PDF Quick Start](output/pdf/MazerPi-MZP351-Quick-Start.pdf)；工程实测见 [Engineering Validation Plan](docs/ENGINEERING-TEST-PLAN.md)。
+美国客户使用的说明见 [English Quick Start](QUICK_START.md) 和 [PDF Quick Start](output/pdf/MazerPi-MZP351-Quick-Start.pdf)；供应商测试请使用[中文工程测试 PDF](output/pdf/MazerPi-MZP351-Quick-Start-zh-CN-Engineering.pdf)；工程实测见 [Engineering Validation Plan](docs/ENGINEERING-TEST-PLAN.md)。
 
 ## 只保留两种客户安装方式
 
@@ -13,14 +13,14 @@
 在能联网的树莓派里打开终端，或者通过 SSH 登录，运行：
 
 ```bash
-curl -fsSL https://raw.githubusercontent.com/iUniker/P035260107-easy-setup/main/install.sh | sudo bash -s -- --reboot
+curl -fL --retry 3 --retry-all-errors https://raw.githubusercontent.com/iUniker/P035260107-easy-setup/main/install.sh -o ~/mazerpi-mzp351-install.sh && sudo bash ~/mazerpi-mzp351-install.sh --reboot
 ```
 
 脚本会检查兼容性，用时间戳备份原有 `config.txt`，只加入屏幕需要的配置，然后自动重启。
 
 ### 2. 下载 ZIP（树莓派无法联网）
 
-在任意可以联网的设备上[下载精简离线 ZIP](https://github.com/iUniker/P035260107-easy-setup/releases/download/v0.4.1-engineering.1/MazerPi-MZP351-Offline-Setup.zip)，传到树莓派并解压。
+在任意可以联网的设备上[下载精简离线 ZIP](https://github.com/iUniker/P035260107-easy-setup/releases/download/v0.4.2-engineering.1/MazerPi-MZP351-Offline-Setup.zip)，传到树莓派并解压。
 
 Raspberry Pi OS Desktop 客户双击 `INSTALL`，如有提示选择 **Execute** 或 **Run**。脚本会自动打开终端、请求树莓派密码、完成安装并重启。
 

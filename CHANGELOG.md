@@ -1,5 +1,19 @@
 # Changelog
 
+## 0.4.2-engineering.1
+
+- Fixed an online/live-system installer bug that stopped setup immediately
+  after detecting the boot partition.
+- Changed the online command to download the complete installer before
+  execution, so an interrupted transfer can never be passed to Bash.
+- Added retries for transient download failures.
+- Removed the unnecessary Enter prompt after a successful offline ZIP install
+  starts an automatic reboot.
+- Added regression coverage for the live-system installation path.
+- Recorded successful display tests on Raspberry Pi Zero 2 W with Debian 13.5
+  (Trixie) and Raspberry Pi kernel 6.18.34+rpt-rpi-v8 using online install,
+  uninstall, and offline ZIP reinstall.
+
 ## 0.4.1-engineering.1
 
 - Added a small customer ZIP with a top-level `INSTALL` launcher.

@@ -6,6 +6,7 @@ import {
   Check,
   Clipboard,
   Download,
+  FileText,
   Monitor,
   RotateCcw,
   ShieldCheck,
@@ -25,9 +26,11 @@ import {
 } from '@/components/ui/card';
 
 const ONLINE_COMMAND =
-  'curl -fsSL https://raw.githubusercontent.com/iUniker/P035260107-easy-setup/main/install.sh | sudo bash -s -- --reboot';
+  'curl -fL --retry 3 --retry-all-errors https://raw.githubusercontent.com/iUniker/P035260107-easy-setup/main/install.sh -o ~/mazerpi-mzp351-install.sh && sudo bash ~/mazerpi-mzp351-install.sh --reboot';
 const OFFLINE_ZIP_URL =
-  'https://github.com/iUniker/P035260107-easy-setup/releases/download/v0.4.1-engineering.1/MazerPi-MZP351-Offline-Setup.zip';
+  'https://github.com/iUniker/P035260107-easy-setup/releases/download/v0.4.2-engineering.1/MazerPi-MZP351-Offline-Setup.zip';
+const QUICK_START_PDF_URL =
+  'https://github.com/iUniker/P035260107-easy-setup/releases/download/v0.4.2-engineering.1/MazerPi-MZP351-Quick-Start.pdf';
 
 export default function Home() {
   const [copied, setCopied] = useState(false);
@@ -110,7 +113,7 @@ export default function Home() {
                   <Badge className="bg-[#e9ff77] text-[#10201d]" variant="secondary">Recommended</Badge>
                 </div>
                 <CardTitle className="flex items-center gap-2 text-lg"><Wifi className="size-5 text-primary" />Online install</CardTitle>
-                <CardDescription className="mt-1">Open Terminal on the Raspberry Pi or connect by SSH, then paste this one command.</CardDescription>
+                <CardDescription className="mt-1">Open Terminal on the Raspberry Pi or connect by SSH, then paste this one command. It runs only after the complete installer has downloaded.</CardDescription>
               </div>
               <Badge className="mt-2 self-start bg-amber-100 text-amber-900 sm:mt-0" variant="secondary">Engineering test command</Badge>
             </CardHeader>
@@ -142,9 +145,14 @@ export default function Home() {
                 <CardTitle className="flex items-center gap-2 text-lg"><WifiOff className="size-5 text-primary" />Install from downloaded ZIP</CardTitle>
                 <CardDescription className="mt-1">A small customer package with a double-click installer for Raspberry Pi OS Desktop.</CardDescription>
               </div>
-              <a className={buttonVariants({ size: 'lg' })} href={OFFLINE_ZIP_URL}>
-                <Download />Download ZIP
-              </a>
+              <div className="mt-2 flex flex-wrap gap-2 self-start sm:mt-0">
+                <a className={buttonVariants({ variant: 'outline', size: 'lg' })} href={QUICK_START_PDF_URL}>
+                  <FileText />PDF guide
+                </a>
+                <a className={buttonVariants({ size: 'lg' })} href={OFFLINE_ZIP_URL}>
+                  <Download />Download ZIP
+                </a>
+              </div>
             </CardHeader>
             <CardContent className="pt-1">
               <div className="grid gap-3 sm:grid-cols-3">
@@ -180,7 +188,7 @@ export default function Home() {
         </div>
 
         <footer className="mt-12 flex flex-col gap-2 border-t pt-6 text-xs leading-5 text-muted-foreground sm:flex-row sm:justify-between">
-          <p>MazerPi MZP351HV00TR / P035260107 · Engineering preview 0.4</p>
+          <p>MazerPi MZP351HV00TR / P035260107 · Engineering preview 0.4.2</p>
           <p>Customer methods: online command or downloaded ZIP.</p>
         </footer>
       </section>

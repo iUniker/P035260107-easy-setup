@@ -3,3 +3,4 @@
 mzp351-diagnostic.txt
 .DS_Store
 dist-packages/
+tmp/

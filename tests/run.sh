@@ -193,4 +193,16 @@ bash "${offline_root}/INSTALL" --boot-dir "${fixture_offline_zip}" --yes >/dev/n
 [[ -f "${fixture_offline_zip}/mzp351hv00tr.txt" ]] || fail "Offline ZIP launcher did not install the managed fragment"
 cmp "${repo_dir}/config/mzp351hv00tr-kms.txt" "${fixture_offline_zip}/mzp351hv00tr.txt" || fail "Offline ZIP configuration differs from the reviewed fragment"
 
+for customer_surface in \
+  "${repo_dir}/README.md" \
+  "${repo_dir}/README.zh-CN.md" \
+  "${repo_dir}/QUICK_START.md" \
+  "${repo_dir}/web-installer/app/page.tsx"; do
+  grep -Fq -- '-o ~/mazerpi-mzp351-install.sh && sudo bash ~/mazerpi-mzp351-install.sh --reboot' "${customer_surface}" || \
+    fail "Customer surface does not download the installer completely before execution: ${customer_surface}"
+  if grep -Fq -- '| sudo bash' "${customer_surface}"; then
+    fail "Customer surface still pipes a network response directly to Bash: ${customer_surface}"
+  fi
+done
+
 printf 'All installer tests passed.\n'
