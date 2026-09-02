@@ -1,6 +1,9 @@
 MAZERPI MZP351HV00TR DISPLAY SETUP
 =================================
 
+Open MazerPi-MZP351-Quick-Start.pdf for the illustrated system and Internet
+selection guide.
+
 Raspberry Pi OS Desktop
 -----------------------
 1. Extract the complete ZIP.

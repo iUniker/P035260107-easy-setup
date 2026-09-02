@@ -165,6 +165,7 @@ offline_extract="${test_root}/offline-package"
 unzip -q "${offline_zip}" -d "${offline_extract}"
 offline_root="${offline_extract}/MazerPi-MZP351-Offline-Setup"
 [[ -x "${offline_root}/INSTALL" ]] || fail "Offline ZIP did not preserve the executable INSTALL launcher"
+[[ -s "${offline_root}/MazerPi-MZP351-Quick-Start.pdf" ]] || fail "Offline ZIP did not include the PDF Quick Start"
 [[ ! -e "${offline_root}/web-installer" ]] || fail "Offline ZIP contains website source"
 
 fake_bin="${test_root}/fake-bin"

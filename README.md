@@ -8,7 +8,8 @@ The installer does **not** replace the OS or kernel, use DKMS, or modify
 applications, network settings, and user data. It enables drivers and Device
 Tree overlays already supplied by Raspberry Pi OS.
 
-Customer instructions: [English Quick Start](QUICK_START.md)
+Customer instructions: [English Quick Start](QUICK_START.md) and
+[PDF Quick Start](output/pdf/MazerPi-MZP351-Quick-Start.pdf)
 
 Engineering must complete the [validation plan](docs/ENGINEERING-TEST-PLAN.md)
 before a production release.

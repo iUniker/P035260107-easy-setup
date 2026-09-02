@@ -6,6 +6,8 @@
 - Desktop customers can double-click `INSTALL`; Lite and headless customers can
   run the short fallback command `bash INSTALL`.
 - Removed website source and engineering files from the customer ZIP.
+- Added a two-page US Letter PDF Quick Start covering online/offline and
+  Desktop/Lite/headless installation paths.
 
 ## 0.4.0-engineering.1
 

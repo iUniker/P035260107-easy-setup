@@ -4,7 +4,7 @@
 
 安装器不会替换操作系统或内核，不使用 DKMS，也不会修改客户的软件、网络和用户数据。它只启用 Raspberry Pi OS 已经自带的驱动和 Device Tree Overlay。
 
-美国客户使用的说明见 [English Quick Start](QUICK_START.md)；工程实测见 [Engineering Validation Plan](docs/ENGINEERING-TEST-PLAN.md)。
+美国客户使用的说明见 [English Quick Start](QUICK_START.md) 和 [PDF Quick Start](output/pdf/MazerPi-MZP351-Quick-Start.pdf)；工程实测见 [Engineering Validation Plan](docs/ENGINEERING-TEST-PLAN.md)。
 
 ## 只保留两种客户安装方式
 
