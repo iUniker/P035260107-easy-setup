@@ -142,4 +142,14 @@ assert_count 1 "# BEGIN MZP351HV00TR MANAGED CONFIG" "${fixture_crlf}/config.txt
 "${repo_dir}/uninstall.sh" --boot-dir "${fixture_crlf}" >/dev/null
 assert_count 0 "# BEGIN MZP351HV00TR MANAGED CONFIG" "${fixture_crlf}/config.txt"
 
+fixture_online="${test_root}/boot-online"
+make_boot_fixture "${fixture_online}"
+printf 'dtparam=audio=on\n' > "${fixture_online}/config.txt"
+standalone_dir="${test_root}/standalone"
+mkdir -p "${standalone_dir}"
+cp "${repo_dir}/install.sh" "${standalone_dir}/install.sh"
+"${standalone_dir}/install.sh" --boot-dir "${fixture_online}" --yes >/dev/null
+[[ -f "${fixture_online}/mzp351hv00tr.txt" ]] || fail "Standalone online installer did not create its embedded fragment"
+cmp "${repo_dir}/config/mzp351hv00tr-kms.txt" "${fixture_online}/mzp351hv00tr.txt" || fail "Embedded online configuration differs from the reviewed fragment"
+
 printf 'All installer tests passed.\n'

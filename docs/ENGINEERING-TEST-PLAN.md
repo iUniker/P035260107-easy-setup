@@ -26,6 +26,17 @@ For every supported OS:
 - Add representative customer settings: Wi-Fi, SSH, camera, UART, audio, custom
   comments, multiple `include` files, and conditional sections.
 - Test installation on the running Pi.
+- Test the public one-command HTTPS install on the running Pi. Confirm the exact
+  published URL uses the reviewed repository and fails closed for HTTP errors.
+- Run the one-command installer twice and confirm the embedded configuration is
+  byte-for-byte identical to `config/mzp351hv00tr-kms.txt`.
+- Test the browser installer in current Chrome on Windows 10/11 and macOS.
+- Test the browser installer in current Microsoft Edge on Windows 10/11.
+- In the browser installer, test a correct `bootfs` partition, a non-boot
+  folder, a read-only card, missing overlays, nested includes, every documented
+  conflict, repeat install, uninstall, cancellation, and safe eject.
+- Confirm Safari and Firefox show the Chrome/Edge requirement instead of an
+  enabled SD-card write button.
 - Test offline installation from Windows.
 - Test offline installation from macOS or Linux.
 - Confirm the installer creates a unique timestamped backup.

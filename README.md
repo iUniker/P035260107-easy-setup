@@ -13,6 +13,31 @@ Customer instructions: [English Quick Start](QUICK_START.md)
 Engineering must complete the [validation plan](docs/ENGINEERING-TEST-PLAN.md)
 before a public release.
 
+The customer-facing browser installer is in [`web-installer`](web-installer).
+It provides the same online command plus a Chrome/Edge workflow that modifies a
+user-selected SD-card boot partition locally. Files are never uploaded.
+
+## Fast online install on a running Raspberry Pi
+
+For the future public repository, the primary customer flow is one command:
+
+```bash
+curl -fsSL https://raw.githubusercontent.com/iUniker/P035260107-easy-setup/main/install.sh | sudo bash -s -- --reboot
+```
+
+This URL will work only after this separate repository has been reviewed and
+published under that exact GitHub name. The command downloads the installer
+over HTTPS, checks the Raspberry Pi and its existing boot configuration, makes
+a timestamped backup, adds only the managed display settings, and reboots.
+
+Customers who prefer to inspect code before running it can use:
+
+```bash
+curl -fsSL https://raw.githubusercontent.com/iUniker/P035260107-easy-setup/main/install.sh -o mzp351-install.sh
+less mzp351-install.sh
+sudo bash mzp351-install.sh --reboot
+```
+
 ## What the installer changes
 
 The installer:
@@ -26,7 +51,7 @@ The installer:
 It never overwrites the entire `config.txt`. Re-running the installer updates
 the managed block instead of adding duplicates.
 
-## Install on an existing running system
+## Install from a downloaded copy
 
 Download and extract this repository, then run:
 

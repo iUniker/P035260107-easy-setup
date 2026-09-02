@@ -14,6 +14,7 @@ force_checks=0
 assume_yes=0
 temporary_config=""
 temporary_fragment=""
+temporary_source_fragment=""
 config_files=()
 
 usage() {
@@ -53,8 +54,45 @@ cleanup() {
   if [[ -n "${temporary_fragment}" && -f "${temporary_fragment}" ]]; then
     rm -f -- "${temporary_fragment}"
   fi
+  if [[ -n "${temporary_source_fragment}" && -f "${temporary_source_fragment}" ]]; then
+    rm -f -- "${temporary_source_fragment}"
+  fi
 }
 trap cleanup EXIT
+
+prepare_source_fragment() {
+  if [[ -f "${source_fragment}" ]]; then
+    return
+  fi
+
+  # Keep the installer self-contained when it is run directly from a trusted
+  # HTTPS URL. A checked-out repository still uses the reviewable config file.
+  temporary_source_fragment="$(mktemp "${TMPDIR:-/tmp}/mzp351-config.XXXXXX")"
+  cat > "${temporary_source_fragment}" <<'EOF'
+# MazerPi MZP351HV00TR - 3.51-inch DPI LCD
+#
+# This file uses drivers and Device Tree overlays supplied by the OS kernel.
+# The installer loads vc4-kms-v3d before including this file when necessary.
+
+# The touchscreen is permanently selected, so free the SPI0 chip-select pins
+# for the RGB565 DPI data bus.
+dtoverlay=spi0-0cs
+dtoverlay=ads7846,penirq=27,swapxy=1,xmin=180,xmax=3900,ymin=180,ymax=3900
+
+# 480x320 RGB565 DPI panel.
+dtoverlay=vc4-kms-dpi-generic
+dtparam=hactive=480,hfp=20,hsync=10,hbp=10
+dtparam=vactive=320,vfp=10,vsync=2,vbp=2
+dtparam=clock-frequency=12000000
+dtparam=hsync-invert,vsync-invert,pixclk-invert
+dtparam=rgb565-padhi
+
+# GPIO18 controls the backlight.
+dtparam=backlight-gpio=18
+gpio=18=op,dh,pd
+EOF
+  source_fragment="${temporary_source_fragment}"
+}
 
 strip_managed_block() {
   local input_file="$1"
@@ -388,7 +426,7 @@ while (( $# > 0 )); do
   esac
 done
 
-[[ -f "${source_fragment}" ]] || fail "Configuration template not found: ${source_fragment}"
+prepare_source_fragment
 
 if [[ -z "${offline_mode:-}" && ${EUID} -ne 0 ]]; then
   fail "Run this installer with sudo, or use --boot-dir for a writable offline SD-card boot partition."

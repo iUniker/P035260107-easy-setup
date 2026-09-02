@@ -1,5 +1,12 @@
 # Changelog
 
+## 0.3.0-engineering.1
+
+- Added a self-contained online installation path for a one-command customer
+  setup on a running Raspberry Pi.
+- Added a browser-based SD-card installer project for Chrome and Edge.
+- Kept the downloadable ZIP and original TXT method as support fallbacks.
+
 ## 0.2.0-engineering.1
 
 - Added non-destructive online and Windows/macOS/Linux offline configuration installers.

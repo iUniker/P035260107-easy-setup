@@ -6,6 +6,19 @@
 
 美国客户使用的说明见 [English Quick Start](QUICK_START.md)；工程实测见 [Engineering Validation Plan](docs/ENGINEERING-TEST-PLAN.md)。
 
+## 两个主推入口
+
+1. 树莓派已经能连网、能用终端或 SSH：客户只运行一条在线安装命令。
+2. 屏幕是黑的、也不能 SSH：在电脑 Chrome/Edge 中打开 `web-installer`，选择 SD 卡的 `bootfs` 分区，再点击安装。
+
+网页方式只读写客户自己选中的文件夹，不会上传 SD 卡内容。原 TXT 方式仍保留为售后备用。
+
+## 在线安装（独立新仓库发布后生效）
+
+```bash
+curl -fsSL https://raw.githubusercontent.com/iUniker/P035260107-easy-setup/main/install.sh | sudo bash -s -- --reboot
+```
+
 ## 安装器会做什么
 
 1. 自动找到 Raspberry Pi 启动分区。

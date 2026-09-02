@@ -21,7 +21,21 @@ touchscreen.
 
 ## Choose one installation method
 
-### Method A - The Raspberry Pi is accessible by SSH or another display
+### Method A - Online install (recommended)
+
+If the Raspberry Pi has Internet access and you can open Terminal or connect by
+SSH, copy and run this single command:
+
+```bash
+curl -fsSL https://raw.githubusercontent.com/iUniker/P035260107-easy-setup/main/install.sh | sudo bash -s -- --reboot
+```
+
+The Raspberry Pi checks compatibility, preserves the existing operating system
+and settings, creates a timestamped backup, installs the display configuration,
+and reboots. The URL becomes active after the separate setup repository is
+published. Do not run a similar command from an unofficial URL.
+
+### Method B - Install from a downloaded copy
 
 Download and extract the setup ZIP on the Raspberry Pi, open Terminal in the
 extracted folder, and run:
@@ -33,7 +47,22 @@ sudo bash install.sh --reboot
 The installer checks compatibility, creates a timestamped backup, installs the
 managed display configuration, and reboots the Raspberry Pi.
 
-### Method B - The LCD is blank and the Raspberry Pi is not accessible
+### Method C - Install from a web browser to the SD card
+
+Use a current desktop version of Chrome or Microsoft Edge:
+
+1. Shut down the Raspberry Pi and insert its microSD card into the computer.
+2. Open the official MazerPi setup page.
+3. Choose **SD-card install**.
+4. Click **Select boot partition** and choose the small partition usually named
+   `bootfs`.
+5. Verify the selected name, then click **Install display setup**.
+6. After the success message, safely eject the card.
+
+The browser modifies only the folder selected by the customer. Nothing is
+uploaded. If the browser method is unavailable, use Method D.
+
+### Method D - Downloaded Windows tool
 
 On a Windows PC:
 
