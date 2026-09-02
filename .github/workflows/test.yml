@@ -1,0 +1,56 @@
+name: Test installers
+
+on:
+  push:
+  pull_request:
+
+permissions:
+  contents: read
+
+jobs:
+  unix:
+    strategy:
+      matrix:
+        os: [ubuntu-latest, macos-latest]
+    runs-on: ${{ matrix.os }}
+    steps:
+      - uses: actions/checkout@v4
+      - name: Check shell syntax
+        run: bash -n install.sh uninstall.sh diagnose.sh tests/run.sh
+      - name: Run installer tests
+        run: bash tests/run.sh
+
+  windows:
+    runs-on: windows-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Test offline PowerShell install and uninstall
+        shell: pwsh
+        run: |
+          $boot = Join-Path $env:RUNNER_TEMP "bootfs"
+          New-Item -ItemType Directory -Path (Join-Path $boot "overlays") -Force | Out-Null
+          Set-Content -Path (Join-Path $boot "config.txt") -Value "# Customer config`ndtparam=audio=on" -Encoding utf8
+          "spi0-0cs.dtbo", "ads7846.dtbo", "vc4-kms-dpi-generic.dtbo" | ForEach-Object {
+            New-Item -ItemType File -Path (Join-Path $boot "overlays\$_") -Force | Out-Null
+          }
+
+          & .\install-offline.ps1 $boot
+          $config = Get-Content -Raw (Join-Path $boot "config.txt")
+          if (($config | Select-String -Pattern "# BEGIN MZP351HV00TR MANAGED CONFIG" -AllMatches).Matches.Count -ne 1) {
+            throw "Managed marker was not installed exactly once"
+          }
+          if (-not (Test-Path (Join-Path $boot "mzp351hv00tr.txt"))) {
+            throw "Managed fragment was not installed"
+          }
+
+          & .\install-offline.ps1 $boot
+          $config = Get-Content -Raw (Join-Path $boot "config.txt")
+          if (($config | Select-String -Pattern "# BEGIN MZP351HV00TR MANAGED CONFIG" -AllMatches).Matches.Count -ne 1) {
+            throw "Repeated install created duplicate markers"
+          }
+
+          & .\uninstall-offline.ps1 $boot
+          $config = Get-Content -Raw (Join-Path $boot "config.txt")
+          if ($config -match "MZP351HV00TR MANAGED CONFIG") {
+            throw "Managed marker remained after uninstall"
+          }
