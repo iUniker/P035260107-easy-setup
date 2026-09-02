@@ -159,4 +159,30 @@ bash -s -- --boot-dir "${fixture_pipe}" --yes < "${repo_dir}/install.sh" >/dev/n
 [[ -f "${fixture_pipe}/mzp351hv00tr.txt" ]] || fail "Piped online installer did not create its embedded fragment"
 cmp "${repo_dir}/config/mzp351hv00tr-kms.txt" "${fixture_pipe}/mzp351hv00tr.txt" || fail "Piped online configuration differs from the reviewed fragment"
 
+offline_zip="${test_root}/MazerPi-MZP351-Offline-Setup.zip"
+"${repo_dir}/scripts/build-offline-package.sh" "${offline_zip}" >/dev/null
+offline_extract="${test_root}/offline-package"
+unzip -q "${offline_zip}" -d "${offline_extract}"
+offline_root="${offline_extract}/MazerPi-MZP351-Offline-Setup"
+[[ -x "${offline_root}/INSTALL" ]] || fail "Offline ZIP did not preserve the executable INSTALL launcher"
+[[ ! -e "${offline_root}/web-installer" ]] || fail "Offline ZIP contains website source"
+
+fake_bin="${test_root}/fake-bin"
+terminal_capture="${test_root}/terminal-arguments.txt"
+mkdir -p "${fake_bin}"
+cat > "${fake_bin}/x-terminal-emulator" <<'EOF'
+#!/usr/bin/env bash
+printf '%s\n' "$@" > "${MZP351_TEST_CAPTURE}"
+EOF
+chmod +x "${fake_bin}/x-terminal-emulator"
+DISPLAY=:99 MZP351_TEST_CAPTURE="${terminal_capture}" PATH="${fake_bin}:${PATH}" bash "${offline_root}/INSTALL" </dev/null
+assert_count 1 "--mzp351-terminal" "${terminal_capture}"
+
+fixture_offline_zip="${test_root}/boot-offline-zip"
+make_boot_fixture "${fixture_offline_zip}"
+printf 'dtparam=audio=on\n' > "${fixture_offline_zip}/config.txt"
+bash "${offline_root}/INSTALL" --boot-dir "${fixture_offline_zip}" --yes >/dev/null
+[[ -f "${fixture_offline_zip}/mzp351hv00tr.txt" ]] || fail "Offline ZIP launcher did not install the managed fragment"
+cmp "${repo_dir}/config/mzp351hv00tr-kms.txt" "${fixture_offline_zip}/mzp351hv00tr.txt" || fail "Offline ZIP configuration differs from the reviewed fragment"
+
 printf 'All installer tests passed.\n'

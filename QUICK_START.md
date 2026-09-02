@@ -33,14 +33,20 @@ managed display configuration, and reboots automatically.
 
 Use this method when the Raspberry Pi cannot access GitHub during installation.
 
-1. [Download the ZIP](https://github.com/iUniker/P035260107-easy-setup/archive/refs/heads/main.zip)
+1. [Download the small offline ZIP](https://github.com/iUniker/P035260107-easy-setup/releases/download/v0.4.1-engineering.1/MazerPi-MZP351-Offline-Setup.zip)
    on any device with Internet access.
 2. Transfer the ZIP to the Raspberry Pi and extract it.
-3. Open Terminal inside the extracted folder.
-4. Run:
+3. On Raspberry Pi OS Desktop, double-click `INSTALL` and choose **Execute** or
+   **Run** if prompted.
+
+The launcher opens a terminal, requests the Raspberry Pi password, installs the
+display configuration, and reboots automatically.
+
+For Raspberry Pi OS Lite or a headless setup, open Terminal in the extracted
+folder and run this short fallback command:
 
 ```bash
-sudo bash install.sh --reboot
+bash INSTALL
 ```
 
 The ZIP performs the same checks and changes as the online method.

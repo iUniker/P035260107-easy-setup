@@ -1,5 +1,12 @@
 # Changelog
 
+## 0.4.1-engineering.1
+
+- Added a small customer ZIP with a top-level `INSTALL` launcher.
+- Desktop customers can double-click `INSTALL`; Lite and headless customers can
+  run the short fallback command `bash INSTALL`.
+- Removed website source and engineering files from the customer ZIP.
+
 ## 0.4.0-engineering.1
 
 - Reduced the customer installation choices to two: one-command online setup

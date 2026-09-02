@@ -1,0 +1,23 @@
+MAZERPI MZP351HV00TR DISPLAY SETUP
+=================================
+
+Raspberry Pi OS Desktop
+-----------------------
+1. Extract the complete ZIP.
+2. Double-click INSTALL.
+3. If asked, choose Execute or Run.
+4. Enter your Raspberry Pi password when the terminal asks.
+
+The installer checks the system, backs up config.txt, adds the display setup,
+and restarts the Raspberry Pi automatically.
+
+Raspberry Pi OS Lite or headless setup
+--------------------------------------
+Open Terminal in this extracted folder and run:
+
+    bash INSTALL
+
+Keep all files together in this folder. Do not run INSTALL from inside the ZIP.
+
+If setup stops, copy the complete error message and send it to support together
+with the Raspberry Pi model and Raspberry Pi OS version.

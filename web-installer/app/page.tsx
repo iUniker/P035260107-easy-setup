@@ -26,17 +26,16 @@ import {
 
 const ONLINE_COMMAND =
   'curl -fsSL https://raw.githubusercontent.com/iUniker/P035260107-easy-setup/main/install.sh | sudo bash -s -- --reboot';
-const OFFLINE_COMMAND = 'sudo bash install.sh --reboot';
 const OFFLINE_ZIP_URL =
-  'https://github.com/iUniker/P035260107-easy-setup/archive/refs/heads/main.zip';
+  'https://github.com/iUniker/P035260107-easy-setup/releases/download/v0.4.1-engineering.1/MazerPi-MZP351-Offline-Setup.zip';
 
 export default function Home() {
-  const [copied, setCopied] = useState<'online' | 'offline' | null>(null);
+  const [copied, setCopied] = useState(false);
 
-  const copyCommand = async (kind: 'online' | 'offline', command: string) => {
-    await navigator.clipboard.writeText(command);
-    setCopied(kind);
-    window.setTimeout(() => setCopied(null), 1800);
+  const copyCommand = async () => {
+    await navigator.clipboard.writeText(ONLINE_COMMAND);
+    setCopied(true);
+    window.setTimeout(() => setCopied(false), 1800);
   };
 
   return (
@@ -118,8 +117,8 @@ export default function Home() {
             <CardContent className="pt-1">
               <div className="command-box">
                 <code>{ONLINE_COMMAND}</code>
-                <Button variant="secondary" size="lg" onClick={() => copyCommand('online', ONLINE_COMMAND)} aria-label="Copy online install command">
-                  {copied === 'online' ? <Check /> : <Clipboard />}{copied === 'online' ? 'Copied' : 'Copy'}
+                <Button variant="secondary" size="lg" onClick={copyCommand} aria-label="Copy online install command">
+                  {copied ? <Check /> : <Clipboard />}{copied ? 'Copied' : 'Copy'}
                 </Button>
               </div>
               <div className="mt-5 grid gap-3 sm:grid-cols-3">
@@ -141,24 +140,18 @@ export default function Home() {
               <div>
                 <div className="mb-3"><Badge variant="secondary">Method 2</Badge></div>
                 <CardTitle className="flex items-center gap-2 text-lg"><WifiOff className="size-5 text-primary" />Install from downloaded ZIP</CardTitle>
-                <CardDescription className="mt-1">Download the package on any connected device, transfer it to the Raspberry Pi, and extract it.</CardDescription>
+                <CardDescription className="mt-1">A small customer package with a double-click installer for Raspberry Pi OS Desktop.</CardDescription>
               </div>
               <a className={buttonVariants({ size: 'lg' })} href={OFFLINE_ZIP_URL}>
                 <Download />Download ZIP
               </a>
             </CardHeader>
             <CardContent className="pt-1">
-              <div className="command-box">
-                <code>{OFFLINE_COMMAND}</code>
-                <Button variant="secondary" size="lg" onClick={() => copyCommand('offline', OFFLINE_COMMAND)} aria-label="Copy offline install command">
-                  {copied === 'offline' ? <Check /> : <Clipboard />}{copied === 'offline' ? 'Copied' : 'Copy'}
-                </Button>
-              </div>
-              <div className="mt-5 grid gap-3 sm:grid-cols-3">
+              <div className="grid gap-3 sm:grid-cols-3">
                 {[
-                  ['1', 'Download', 'Save the ZIP before going offline'],
+                  ['1', 'Download', 'Save the small offline ZIP'],
                   ['2', 'Transfer', 'Move it to the Pi and extract it'],
-                  ['3', 'Run', 'Open Terminal in that folder'],
+                  ['3', 'Double-click', 'Open INSTALL and choose Execute'],
                 ].map(([number, title, detail]) => (
                   <div className="step-card" key={number}>
                     <span>{number}</span><div><strong>{title}</strong><p>{detail}</p></div>
@@ -167,8 +160,8 @@ export default function Home() {
               </div>
               <Alert className="mt-5 border-sky-200 bg-sky-50 text-sky-950">
                 <Archive />
-                <AlertTitle>The ZIP still installs into the customer&apos;s existing system</AlertTitle>
-                <AlertDescription>Run the command from inside the extracted folder. The installer does not replace Raspberry Pi OS or remove existing applications and settings.</AlertDescription>
+                <AlertTitle>No Terminal command is needed on Raspberry Pi OS Desktop</AlertTitle>
+                <AlertDescription>Double-click <strong>INSTALL</strong>. It opens a terminal, requests the Raspberry Pi password, installs, and restarts automatically. On Raspberry Pi OS Lite or a headless system, open the extracted folder in Terminal and run <code>bash INSTALL</code>.</AlertDescription>
               </Alert>
             </CardContent>
           </Card>

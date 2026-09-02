@@ -20,10 +20,14 @@ curl -fsSL https://raw.githubusercontent.com/iUniker/P035260107-easy-setup/main/
 
 ### 2. 下载 ZIP（树莓派无法联网）
 
-在任意可以联网的设备上[下载 ZIP](https://github.com/iUniker/P035260107-easy-setup/archive/refs/heads/main.zip)，传到树莓派并解压。在解压文件夹内打开终端，运行：
+在任意可以联网的设备上[下载精简离线 ZIP](https://github.com/iUniker/P035260107-easy-setup/releases/download/v0.4.1-engineering.1/MazerPi-MZP351-Offline-Setup.zip)，传到树莓派并解压。
+
+Raspberry Pi OS Desktop 客户双击 `INSTALL`，如有提示选择 **Execute** 或 **Run**。脚本会自动打开终端、请求树莓派密码、完成安装并重启。
+
+Raspberry Pi OS Lite 或无桌面系统，在解压文件夹内运行：
 
 ```bash
-sudo bash install.sh --reboot
+bash INSTALL
 ```
 
 ZIP 方式与在线安装执行相同的检查和配置，安装时不要求树莓派访问 GitHub。

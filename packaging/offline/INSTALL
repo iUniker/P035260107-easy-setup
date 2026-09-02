@@ -1,0 +1,68 @@
+#!/usr/bin/env bash
+set -Eeuo pipefail
+
+script_dir="$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")" && pwd -P)"
+script_path="${script_dir}/INSTALL"
+installer_path="${script_dir}/install.sh"
+terminal_child=0
+
+if [[ "${1:-}" == "--mzp351-terminal" ]]; then
+  terminal_child=1
+  shift
+fi
+
+if [[ ! -f "${installer_path}" ]]; then
+  printf 'MazerPi installer not found: %s\n' "${installer_path}" >&2
+  printf 'Extract the complete ZIP before running INSTALL.\n' >&2
+  exit 1
+fi
+
+# A file-manager launch normally has no terminal. Open the system terminal and
+# run this same launcher again so the customer can see prompts and errors.
+if (( ! terminal_child )) && [[ ! -t 0 ]] && [[ -n "${DISPLAY:-}${WAYLAND_DISPLAY:-}" ]]; then
+  if command -v x-terminal-emulator >/dev/null 2>&1; then
+    exec x-terminal-emulator -e bash "${script_path}" --mzp351-terminal "$@"
+  elif command -v lxterminal >/dev/null 2>&1; then
+    exec lxterminal -e bash "${script_path}" --mzp351-terminal "$@"
+  elif command -v gnome-terminal >/dev/null 2>&1; then
+    exec gnome-terminal -- bash "${script_path}" --mzp351-terminal "$@"
+  fi
+fi
+
+cd -- "${script_dir}"
+
+needs_sudo=1
+for argument in "$@"; do
+  if [[ "${argument}" == "--boot-dir" ]]; then
+    needs_sudo=0
+    break
+  fi
+done
+
+printf '\nMazerPi MZP351HV00TR Display Setup\n'
+printf '%s\n' '-----------------------------------'
+
+set +e
+if (( EUID == 0 || ! needs_sudo )); then
+  bash "${installer_path}" --reboot "$@"
+  status=$?
+elif command -v sudo >/dev/null 2>&1; then
+  sudo bash "${installer_path}" --reboot "$@"
+  status=$?
+else
+  printf 'sudo is required but was not found.\n' >&2
+  status=1
+fi
+set -e
+
+if (( status != 0 )); then
+  printf '\nSetup stopped without completing. Copy the error above and send it to support.\n' >&2
+elif [[ -t 0 ]]; then
+  printf '\nSetup finished. The Raspberry Pi should restart automatically.\n'
+fi
+
+if [[ -t 0 ]]; then
+  read -r -p 'Press Enter to close this window...' _ || true
+fi
+
+exit "${status}"

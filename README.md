@@ -28,12 +28,18 @@ timestamped backup, adds only the managed display settings, and reboots.
 
 ### 2. Downloaded ZIP — no Internet on the Raspberry Pi
 
-[Download the ZIP](https://github.com/iUniker/P035260107-easy-setup/archive/refs/heads/main.zip)
-on any connected device. Transfer it to the Raspberry Pi, extract it, open
-Terminal in the extracted folder, and run:
+[Download the small offline ZIP](https://github.com/iUniker/P035260107-easy-setup/releases/download/v0.4.1-engineering.1/MazerPi-MZP351-Offline-Setup.zip)
+on any connected device, transfer it to the Raspberry Pi, and extract it.
+
+On Raspberry Pi OS Desktop, double-click `INSTALL` and choose **Execute** or
+**Run** if prompted. The launcher opens a terminal, requests the Raspberry Pi
+password, installs the display configuration, and reboots automatically.
+
+On Raspberry Pi OS Lite or a headless setup, open Terminal in the extracted
+folder and run:
 
 ```bash
-sudo bash install.sh --reboot
+bash INSTALL
 ```
 
 The ZIP method performs the same checks and changes as the online method. It

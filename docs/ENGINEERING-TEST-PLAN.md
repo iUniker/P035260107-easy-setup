@@ -30,8 +30,11 @@ For every supported OS:
   published URL uses the reviewed repository and fails closed for HTTP errors.
 - Run the one-command installer twice and confirm the embedded configuration is
   byte-for-byte identical to `config/mzp351hv00tr-kms.txt`.
-- Download the public ZIP on another device, transfer it to each supported Pi,
-  extract it, and run `sudo bash install.sh --reboot` without network access.
+- Download the public offline ZIP on another device and transfer it to each
+  supported Pi. On Raspberry Pi OS Desktop, extract it and double-click
+  `INSTALL`; confirm the terminal opens, requests elevation, and reboots. On
+  Raspberry Pi OS Lite, extract it and run `bash INSTALL` without network
+  access.
 - Confirm the online command and downloaded ZIP install byte-for-byte identical
   managed display configuration.
 - Confirm the installer creates a unique timestamped backup.
