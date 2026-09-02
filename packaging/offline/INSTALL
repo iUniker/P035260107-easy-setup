@@ -12,7 +12,7 @@ if [[ "${1:-}" == "--mzp351-terminal" ]]; then
 fi
 
 if [[ ! -f "${installer_path}" ]]; then
-  printf 'MazerPi installer not found: %s\n' "${installer_path}" >&2
+  printf 'iUniker installer not found: %s\n' "${installer_path}" >&2
   printf 'Extract the complete ZIP before running INSTALL.\n' >&2
   exit 1
 fi
@@ -39,7 +39,7 @@ for argument in "$@"; do
   fi
 done
 
-printf '\nMazerPi MZP351HV00TR Display Setup\n'
+printf '\niUniker MZP351HV00TR Display Setup\n'
 printf '%s\n' '-----------------------------------'
 
 set +e

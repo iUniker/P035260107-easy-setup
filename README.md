@@ -1,6 +1,6 @@
 # MZP351HV00TR Easy Setup
 
-Non-destructive setup for the MazerPi 3.51-inch 480x320 DPI LCD with resistive
+Non-destructive setup for the iUniker 3.51-inch 480x320 DPI LCD with resistive
 touch. It is designed for customers who already have a configured Raspberry Pi
 system and do not want to replace it with a vendor image.
 
@@ -9,7 +9,7 @@ applications, network settings, and user data. It enables drivers and Device
 Tree overlays already supplied by Raspberry Pi OS.
 
 Customer instructions: [English Quick Start](QUICK_START.md) and
-[PDF Quick Start](output/pdf/MazerPi-MZP351-Quick-Start.pdf)
+[PDF Quick Start](output/pdf/iUniker-MZP351-Quick-Start.pdf)
 
 Engineering must complete the [validation plan](docs/ENGINEERING-TEST-PLAN.md)
 before a production release.
@@ -21,7 +21,7 @@ before a production release.
 On a connected Raspberry Pi, open Terminal or connect by SSH and run:
 
 ```bash
-curl -fL --retry 3 --retry-all-errors https://raw.githubusercontent.com/iUniker/P035260107-easy-setup/main/install.sh -o ~/mazerpi-mzp351-install.sh && sudo bash ~/mazerpi-mzp351-install.sh --reboot
+curl -fL --retry 3 --retry-all-errors https://raw.githubusercontent.com/iUniker/P035260107-easy-setup/main/install.sh -o ~/iuniker-mzp351-install.sh && sudo bash ~/iuniker-mzp351-install.sh --reboot
 ```
 
 The command downloads the complete installer over HTTPS before running it. If
@@ -31,7 +31,7 @@ display settings, and reboots.
 
 ### 2. Downloaded ZIP — no Internet on the Raspberry Pi
 
-[Download the small offline ZIP](https://github.com/iUniker/P035260107-easy-setup/releases/download/v0.4.2-engineering.1/MazerPi-MZP351-Offline-Setup.zip)
+[Download the small offline ZIP](https://github.com/iUniker/P035260107-easy-setup/releases/download/v0.4.3-engineering.1/iUniker-MZP351-Offline-Setup.zip)
 on any connected device, transfer it to the Raspberry Pi, and extract it.
 
 On Raspberry Pi OS Desktop, double-click `INSTALL` and choose **Execute** or

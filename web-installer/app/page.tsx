@@ -26,11 +26,11 @@ import {
 } from '@/components/ui/card';
 
 const ONLINE_COMMAND =
-  'curl -fL --retry 3 --retry-all-errors https://raw.githubusercontent.com/iUniker/P035260107-easy-setup/main/install.sh -o ~/mazerpi-mzp351-install.sh && sudo bash ~/mazerpi-mzp351-install.sh --reboot';
+  'curl -fL --retry 3 --retry-all-errors https://raw.githubusercontent.com/iUniker/P035260107-easy-setup/main/install.sh -o ~/iuniker-mzp351-install.sh && sudo bash ~/iuniker-mzp351-install.sh --reboot';
 const OFFLINE_ZIP_URL =
-  'https://github.com/iUniker/P035260107-easy-setup/releases/download/v0.4.2-engineering.1/MazerPi-MZP351-Offline-Setup.zip';
+  'https://github.com/iUniker/P035260107-easy-setup/releases/download/v0.4.3-engineering.1/iUniker-MZP351-Offline-Setup.zip';
 const QUICK_START_PDF_URL =
-  'https://github.com/iUniker/P035260107-easy-setup/releases/download/v0.4.2-engineering.1/MazerPi-MZP351-Quick-Start.pdf';
+  'https://github.com/iUniker/P035260107-easy-setup/releases/download/v0.4.3-engineering.1/iUniker-MZP351-Quick-Start.pdf';
 
 export default function Home() {
   const [copied, setCopied] = useState(false);
@@ -50,7 +50,7 @@ export default function Home() {
               <Monitor className="size-5" aria-hidden="true" />
             </span>
             <div>
-              <p className="text-sm font-semibold tracking-wide">MAZERPI</p>
+              <p className="text-sm font-semibold tracking-wide">iUNIKER</p>
               <p className="text-[11px] text-white/55">DISPLAY SETUP</p>
             </div>
           </div>
@@ -188,7 +188,7 @@ export default function Home() {
         </div>
 
         <footer className="mt-12 flex flex-col gap-2 border-t pt-6 text-xs leading-5 text-muted-foreground sm:flex-row sm:justify-between">
-          <p>MazerPi MZP351HV00TR / P035260107 · Engineering preview 0.4.2</p>
+          <p>iUniker MZP351HV00TR / P035260107 · Engineering preview 0.4.3</p>
           <p>Customer methods: online command or downloaded ZIP.</p>
         </footer>
       </section>

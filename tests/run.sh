@@ -166,7 +166,7 @@ bash -s -- --boot-dir "${fixture_pipe}" --yes < "${repo_dir}/install.sh" >/dev/n
 [[ -f "${fixture_pipe}/mzp351hv00tr.txt" ]] || fail "Piped online installer did not create its embedded fragment"
 cmp "${repo_dir}/config/mzp351hv00tr-kms.txt" "${fixture_pipe}/mzp351hv00tr.txt" || fail "Piped online configuration differs from the reviewed fragment"
 
-offline_zip="${test_root}/MazerPi-MZP351-Offline-Setup.zip"
+offline_zip="${test_root}/iUniker-MZP351-Offline-Setup.zip"
 "${repo_dir}/scripts/build-offline-package.sh" "${offline_zip}" >/dev/null
 (
   cd -- "$(dirname -- "${offline_zip}")"
@@ -177,9 +177,9 @@ if grep -Fq -- "${test_root}" "${offline_zip}.sha256"; then
 fi
 offline_extract="${test_root}/offline-package"
 unzip -q "${offline_zip}" -d "${offline_extract}"
-offline_root="${offline_extract}/MazerPi-MZP351-Offline-Setup"
+offline_root="${offline_extract}/iUniker-MZP351-Offline-Setup"
 [[ -x "${offline_root}/INSTALL" ]] || fail "Offline ZIP did not preserve the executable INSTALL launcher"
-[[ -s "${offline_root}/MazerPi-MZP351-Quick-Start.pdf" ]] || fail "Offline ZIP did not include the PDF Quick Start"
+[[ -s "${offline_root}/iUniker-MZP351-Quick-Start.pdf" ]] || fail "Offline ZIP did not include the PDF Quick Start"
 [[ ! -e "${offline_root}/web-installer" ]] || fail "Offline ZIP contains website source"
 
 fake_bin="${test_root}/fake-bin"
@@ -205,7 +205,7 @@ for customer_surface in \
   "${repo_dir}/README.zh-CN.md" \
   "${repo_dir}/QUICK_START.md" \
   "${repo_dir}/web-installer/app/page.tsx"; do
-  grep -Fq -- '-o ~/mazerpi-mzp351-install.sh && sudo bash ~/mazerpi-mzp351-install.sh --reboot' "${customer_surface}" || \
+  grep -Fq -- '-o ~/iuniker-mzp351-install.sh && sudo bash ~/iuniker-mzp351-install.sh --reboot' "${customer_surface}" || \
     fail "Customer surface does not download the installer completely before execution: ${customer_surface}"
   if grep -Fq -- '| sudo bash' "${customer_surface}"; then
     fail "Customer surface still pipes a network response directly to Bash: ${customer_surface}"

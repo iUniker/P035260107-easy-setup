@@ -1,4 +1,4 @@
-# MazerPi MZP351HV00TR - 3.51-inch DPI LCD
+# iUniker MZP351HV00TR - 3.51-inch DPI LCD
 #
 # This file uses drivers and Device Tree overlays supplied by the OS kernel.
 # The installer loads vc4-kms-v3d before including this file when necessary.

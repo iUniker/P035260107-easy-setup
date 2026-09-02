@@ -13,12 +13,12 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  metadataBase: new URL('https://mazerpi-mzp351-setup.kiki19890901.chatgpt.site'),
-  title: 'MazerPi 3.51-inch LCD Setup',
+  metadataBase: new URL('https://iuniker-mzp351-setup.kiki19890901.chatgpt.site'),
+  title: 'iUniker 3.51-inch LCD Setup',
   description:
-    'Install the MazerPi MZP351HV00TR display without replacing your Raspberry Pi operating system.',
+    'Install the iUniker MZP351HV00TR display without replacing your Raspberry Pi operating system.',
   openGraph: {
-    title: 'MazerPi 3.51-inch LCD Setup',
+    title: 'iUniker 3.51-inch LCD Setup',
     description:
       'Keep your Raspberry Pi system and add the display in minutes.',
     type: 'website',
@@ -27,13 +27,13 @@ export const metadata: Metadata = {
         url: '/og.png',
         width: 1200,
         height: 630,
-        alt: 'MazerPi 3.51-inch LCD setup: install online or from ZIP',
+        alt: 'iUniker 3.51-inch LCD setup: install online or from ZIP',
       },
     ],
   },
   twitter: {
     card: 'summary_large_image',
-    title: 'MazerPi 3.51-inch LCD Setup',
+    title: 'iUniker 3.51-inch LCD Setup',
     description:
       'Keep your Raspberry Pi system and add the display in minutes.',
     images: ['/og.png'],

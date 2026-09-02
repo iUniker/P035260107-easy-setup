@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""生成 MazerPi MZP351 中文工程测试版 PDF。"""
+"""生成 iUniker MZP351 中文工程测试版 PDF。"""
 
 from __future__ import annotations
 
@@ -54,8 +54,8 @@ PCB_BACK_IMAGE = PRODUCT_IMAGE_DIR / "display-pcb-back.jpg"
 
 ONLINE_COMMAND = (
     "curl -fL --retry 3 --retry-all-errors https://raw.githubusercontent.com/iUniker/"
-    "P035260107-easy-setup/main/install.sh -o ~/mazerpi-mzp351-install.sh && "
-    "sudo bash ~/mazerpi-mzp351-install.sh --reboot"
+    "P035260107-easy-setup/main/install.sh -o ~/iuniker-mzp351-install.sh && "
+    "sudo bash ~/iuniker-mzp351-install.sh --reboot"
 )
 OFFLINE_COMMAND = "bash INSTALL"
 DIAG_COMMAND = "sudo bash diagnose.sh | tee mzp351-diagnostic.txt"
@@ -278,10 +278,10 @@ def header_footer(canvas, doc):
     canvas.roundRect(0.48 * inch, height - 0.54 * inch, 0.30 * inch, 0.30 * inch, 5, fill=1, stroke=0)
     canvas.setFillColor(INK)
     canvas.setFont("Helvetica-Bold", 8)
-    canvas.drawCentredString(0.63 * inch, height - 0.43 * inch, "M")
+    canvas.drawCentredString(0.63 * inch, height - 0.43 * inch, "iU")
     canvas.setFillColor(WHITE)
     canvas.setFont("Helvetica-Bold", 11)
-    canvas.drawString(0.88 * inch, height - 0.39 * inch, "MAZERPI")
+    canvas.drawString(0.88 * inch, height - 0.39 * inch, "iUNIKER")
     canvas.setFont("CN", 7.5)
     canvas.setFillColor(colors.HexColor("#AFC3BD"))
     canvas.drawString(0.88 * inch, height - 0.53 * inch, "屏幕安装与工程测试")
@@ -848,10 +848,10 @@ def build_pdf(output_path: Path):
         rightMargin=0.50 * inch,
         topMargin=0.89 * inch,
         bottomMargin=0.47 * inch,
-        title="MazerPi MZP351HV00TR 中文工程测试指南",
-        author="MazerPi",
+        title="iUniker MZP351HV00TR 中文工程测试指南",
+        author="iUniker",
         subject="MZP351HV00TR 安装、硬件、GPIO 及多系统测试指南",
-        creator="MazerPi Easy Setup",
+        creator="iUniker Easy Setup",
     )
     frame = Frame(doc.leftMargin, doc.bottomMargin, doc.width, doc.height, id="main", leftPadding=0, rightPadding=0, topPadding=0, bottomPadding=0)
     doc.addPageTemplates([PageTemplate(id="letter", frames=[frame], onPage=header_footer)])

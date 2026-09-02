@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 set -Eeuo pipefail
 
-readonly PRODUCT_NAME="MazerPi MZP351HV00TR 3.51-inch DPI LCD"
+readonly PRODUCT_NAME="iUniker MZP351HV00TR 3.51-inch DPI LCD"
 readonly FRAGMENT_NAME="mzp351hv00tr.txt"
 readonly MARKER_BEGIN="# BEGIN MZP351HV00TR MANAGED CONFIG"
 readonly MARKER_END="# END MZP351HV00TR MANAGED CONFIG"
@@ -22,7 +22,7 @@ config_files=()
 
 usage() {
   cat <<'EOF'
-Install the MazerPi MZP351HV00TR display configuration without replacing the OS.
+Install the iUniker MZP351HV00TR display configuration without replacing the OS.
 
 Usage:
   sudo ./install.sh [--reboot]
@@ -72,7 +72,7 @@ prepare_source_fragment() {
   # HTTPS URL. A checked-out repository still uses the reviewable config file.
   temporary_source_fragment="$(mktemp "${TMPDIR:-/tmp}/mzp351-config.XXXXXX")"
   cat > "${temporary_source_fragment}" <<'EOF'
-# MazerPi MZP351HV00TR - 3.51-inch DPI LCD
+# iUniker MZP351HV00TR - 3.51-inch DPI LCD
 #
 # This file uses drivers and Device Tree overlays supplied by the OS kernel.
 # The installer loads vc4-kms-v3d before including this file when necessary.

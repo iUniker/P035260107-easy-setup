@@ -1,5 +1,13 @@
 # Changelog
 
+## 0.4.3-engineering.1
+
+- Corrected the product branding to iUniker across the installer,
+  website, documentation, PDF metadata, and offline package.
+- Renamed customer download artifacts and the temporary online installer file
+  to use the iUniker brand.
+- Rebuilt the English and Chinese PDF guides and the website sharing image.
+
 ## 0.4.2-engineering.1
 
 - Fixed an online/live-system installer bug that stopped setup immediately
