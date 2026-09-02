@@ -4,6 +4,8 @@
 
 本工具不会替换操作系统，不会替换内核，不使用 DKMS，也不会修改客户的软件、网络和用户数据。它只启用系统已经自带的内核驱动和 Device Tree Overlay。
 
+美国客户使用的说明见 [English Quick Start](QUICK_START.md)；工程实测见 [Engineering Validation Plan](docs/ENGINEERING-TEST-PLAN.md)。
+
 ## 安装器会做什么
 
 1. 自动找到 Raspberry Pi 启动分区。
@@ -31,7 +33,7 @@ sudo bash install.sh --reboot
 
 ### Windows
 
-插入 SD 卡后，双击 `install-windows.cmd`。工具会自动查找 Raspberry Pi 启动分区。
+插入 SD 卡后，双击 `install-windows.cmd`。工具会自动查找 Raspberry Pi 启动分区，显示盘符、卷标和容量，并要求输入 `INSTALL` 后才会写入。
 
 对应的 PowerShell 命令是：
 

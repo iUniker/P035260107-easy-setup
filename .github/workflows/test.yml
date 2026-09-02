@@ -34,7 +34,7 @@ jobs:
             New-Item -ItemType File -Path (Join-Path $boot "overlays\$_") -Force | Out-Null
           }
 
-          & .\install-offline.ps1 $boot
+          & .\install-offline.ps1 $boot -Yes
           $config = Get-Content -Raw (Join-Path $boot "config.txt")
           if (($config | Select-String -Pattern "# BEGIN MZP351HV00TR MANAGED CONFIG" -AllMatches).Matches.Count -ne 1) {
             throw "Managed marker was not installed exactly once"
@@ -43,7 +43,7 @@ jobs:
             throw "Managed fragment was not installed"
           }
 
-          & .\install-offline.ps1 $boot
+          & .\install-offline.ps1 $boot -Yes
           $config = Get-Content -Raw (Join-Path $boot "config.txt")
           if (($config | Select-String -Pattern "# BEGIN MZP351HV00TR MANAGED CONFIG" -AllMatches).Matches.Count -ne 1) {
             throw "Repeated install created duplicate markers"
@@ -53,4 +53,27 @@ jobs:
           $config = Get-Content -Raw (Join-Path $boot "config.txt")
           if ($config -match "MZP351HV00TR MANAGED CONFIG") {
             throw "Managed marker remained after uninstall"
+          }
+
+          Set-Content -Path (Join-Path $boot "config.txt") -Value "include usercfg.txt" -Encoding utf8
+          Set-Content -Path (Join-Path $boot "usercfg.txt") -Value "dtoverlay=ads7846,penirq=27" -Encoding utf8
+          $rejected = $false
+          try {
+            & .\install-offline.ps1 $boot -Yes
+          } catch {
+            $rejected = $true
+          }
+          if (-not $rejected) {
+            throw "A conflict in an included config file was not rejected"
+          }
+
+          $prefixBoot = Join-Path $env:RUNNER_TEMP "bootfs-prefix"
+          New-Item -ItemType Directory -Path (Join-Path $prefixBoot "vendor\overlays") -Force | Out-Null
+          Set-Content -Path (Join-Path $prefixBoot "config.txt") -Value "os_prefix=vendor/`noverlay_prefix=overlays/" -Encoding utf8
+          "spi0-0cs.dtbo", "ads7846.dtbo", "vc4-kms-dpi-generic.dtbo" | ForEach-Object {
+            New-Item -ItemType File -Path (Join-Path $prefixBoot "vendor\overlays\$_") -Force | Out-Null
+          }
+          & .\install-offline.ps1 $prefixBoot -Yes
+          if (-not (Test-Path (Join-Path $prefixBoot "mzp351hv00tr.txt"))) {
+            throw "os_prefix and overlay_prefix layout was not supported"
           }

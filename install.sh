@@ -11,8 +11,10 @@ source_fragment="${script_dir}/config/mzp351hv00tr-kms.txt"
 boot_dir=""
 reboot_after=0
 force_checks=0
+assume_yes=0
 temporary_config=""
 temporary_fragment=""
+config_files=()
 
 usage() {
   cat <<'EOF'
@@ -29,6 +31,8 @@ Options:
   --force         Continue when the model cannot be verified or an expected
                   overlay file is missing. Display-configuration conflicts
                   are never overridden automatically.
+  --yes           Skip the confirmation prompt for an offline SD card.
+                  Intended for automated testing and support workflows.
   -h, --help      Show this help.
 EOF
 }
@@ -87,6 +91,7 @@ resolve_boot_dir() {
     boot_dir="${boot_dir%/}"
     [[ -d "${boot_dir}" ]] || fail "Boot directory not found: ${boot_dir}"
     [[ -f "${boot_dir}/config.txt" ]] || fail "config.txt not found in ${boot_dir}"
+    boot_dir="$(cd -- "${boot_dir}" && pwd -P)"
     return
   fi
 
@@ -98,6 +103,76 @@ resolve_boot_dir() {
   done
 
   fail "Could not find /boot/firmware/config.txt or /boot/config.txt. Use --boot-dir for an offline SD card."
+}
+
+confirm_offline_target() {
+  local answer
+
+  [[ -n "${offline_mode:-}" ]] || return
+
+  log "Selected offline boot partition: ${boot_dir}"
+  df -h "${boot_dir}" 2>/dev/null | tail -n 1 || true
+
+  if (( assume_yes )); then
+    return
+  fi
+
+  if [[ ! -t 0 ]]; then
+    fail "Offline installation requires confirmation. Run interactively, or add --yes only after verifying the target path."
+  fi
+
+  printf 'Type INSTALL to modify this SD-card boot partition: '
+  read -r answer
+  [[ "${answer}" == "INSTALL" ]] || fail "Installation cancelled. No changes were made."
+}
+
+config_file_seen() {
+  local wanted="$1"
+  local existing
+  (( ${#config_files[@]} > 0 )) || return 1
+  for existing in "${config_files[@]}"; do
+    [[ "${existing}" == "${wanted}" ]] && return 0
+  done
+  return 1
+}
+
+collect_config_file() {
+  local file="$1"
+  local depth="$2"
+  local line
+  local include_name
+  local include_file
+  local include_dir
+
+  (( depth <= 12 )) || fail "Configuration include depth exceeds 12 near ${file}. Check for an include loop."
+  config_file_seen "${file}" && return
+  config_files+=("${file}")
+
+  while IFS= read -r line || [[ -n "${line}" ]]; do
+    line="${line%$'\r'}"
+    if [[ "${line}" =~ ^[[:space:]]*include[[:space:]]+([^#[:space:]]+) ]]; then
+      include_name="${BASH_REMATCH[1]}"
+      include_name="${include_name#/}"
+      include_file="${boot_dir}/${include_name}"
+
+      if [[ ! -f "${include_file}" ]]; then
+        log "WARNING: included configuration file was not found: ${include_name}"
+        continue
+      fi
+
+      include_dir="$(cd -- "$(dirname -- "${include_file}")" && pwd -P)"
+      include_file="${include_dir}/$(basename -- "${include_file}")"
+      case "${include_file}" in
+        "${boot_dir}"/*) collect_config_file "${include_file}" "$((depth + 1))" ;;
+        *) fail "Included configuration escapes the boot partition: ${include_name}" ;;
+      esac
+    fi
+  done < "${file}"
+}
+
+collect_config_files() {
+  config_files=()
+  collect_config_file "$1" 0
 }
 
 check_model() {
@@ -135,7 +210,7 @@ check_model() {
   esac
 }
 
-active_value() {
+active_value_in_file() {
   local key="$1"
   local file="$2"
 
@@ -154,17 +229,50 @@ active_value() {
   ' "${file}"
 }
 
+active_value() {
+  local key="$1"
+  local file
+  local value
+  local result=""
+
+  for file in "${config_files[@]}"; do
+    value="$(active_value_in_file "${key}" "${file}")"
+    [[ -n "${value}" ]] && result="${value}"
+  done
+  printf '%s\n' "${result}"
+}
+
 check_overlays() {
   local config_file="$1"
   local overlay_prefix
+  local os_prefix
   local overlay_dir
+  local candidate
   local overlay
   local missing=()
+  local candidates=()
 
-  overlay_prefix="$(active_value overlay_prefix "${config_file}")"
+  overlay_prefix="$(active_value overlay_prefix)"
   overlay_prefix="${overlay_prefix:-overlays}"
   overlay_prefix="${overlay_prefix#/}"
-  overlay_dir="${boot_dir}/${overlay_prefix%/}"
+  os_prefix="$(active_value os_prefix)"
+  os_prefix="${os_prefix#/}"
+
+  [[ -n "${os_prefix}" ]] && candidates+=("${boot_dir}/${os_prefix%/}/${overlay_prefix%/}")
+  candidates+=("${boot_dir}/${overlay_prefix%/}" "${boot_dir}/overlays")
+
+  overlay_dir=""
+  for candidate in "${candidates[@]}"; do
+    if [[ -f "${candidate}/spi0-0cs.dtbo" &&
+          -f "${candidate}/ads7846.dtbo" &&
+          -f "${candidate}/vc4-kms-dpi-generic.dtbo" ]]; then
+      overlay_dir="${candidate}"
+      break
+    fi
+  done
+
+  [[ -n "${overlay_dir}" ]] && return
+  overlay_dir="${candidates[0]}"
 
   for overlay in spi0-0cs ads7846 vc4-kms-dpi-generic; do
     if [[ ! -f "${overlay_dir}/${overlay}.dtbo" ]]; then
@@ -182,29 +290,72 @@ check_overlays() {
 }
 
 check_conflicts() {
-  local config_file="$1"
+  local config_file
   local conflicts
 
-  if grep -Eq '^[[:space:]]*include[[:space:]]+mzp351hv00tr-(new|old)\.txt([[:space:]]|$)' "${config_file}"; then
-    fail "This system still includes the original mzp351hv00tr-new/old file. Remove that include line before using the managed installer."
-  fi
+  for config_file in "${config_files[@]}"; do
+    if grep -Eq '^[[:space:]]*include[[:space:]]+mzp351hv00tr-(new|old)\.txt([[:space:]]|$)' "${config_file}"; then
+      fail "The original mzp351hv00tr-new/old configuration is already included by ${config_file}. If the display works, no migration is required. Remove that include only when intentionally switching to the managed installer."
+    fi
 
-  conflicts="$(grep -En \
-    '^[[:space:]]*(dtoverlay=vc4-(f)?kms-dpi-|dtoverlay=ads7846([,[:space:]]|$)|dtoverlay=spi0-0cs([,[:space:]]|$)|enable_dpi_lcd=1|dpi_(group|mode|output_format|timings)=)' \
-    "${config_file}" || true)"
+    conflicts="$(grep -En \
+      '^[[:space:]]*(dtoverlay=vc4-(f)?kms-dpi-|dtoverlay=vc4-fkms-v3d([,[:space:]]|$)|dtoverlay=ads7846([,[:space:]]|$)|dtoverlay=spi0-0cs([,[:space:]]|$)|enable_dpi_lcd=1|dpi_(group|mode|output_format|timings)=|display_default_lcd=1)' \
+      "${config_file}" || true)"
 
-  if [[ -n "${conflicts}" ]]; then
-    printf 'Conflicting display configuration found in %s:\n%s\n' "${config_file}" "${conflicts}" >&2
-    fail "No changes were made. Remove or disable the conflicting display configuration, then run the installer again."
-  fi
+    if [[ -n "${conflicts}" ]]; then
+      printf 'Conflicting display configuration found in %s:\n%s\n' "${config_file}" "${conflicts}" >&2
+      fail "No changes were made. Remove or disable the conflicting display configuration, then run the installer again."
+    fi
+  done
+}
+
+file_has_effective_setting() {
+  local file="$1"
+  local setting="$2"
+
+  awk -v wanted="${setting}" '
+    BEGIN { applies = 1 }
+    {
+      line = $0
+      sub(/\r$/, "", line)
+      lower = tolower(line)
+    }
+    lower ~ /^[[:space:]]*\[[^]]+\][[:space:]]*$/ {
+      tag = lower
+      gsub(/^[[:space:]]*\[|\][[:space:]]*$/, "", tag)
+      if (tag == "all" || tag == "pi0" || tag == "pi0w" || tag == "pi02") {
+        applies = 1
+      } else if (tag == "none" || tag ~ /^(pi[1-9]|pi3\+|pi400|pi500|cm0|cm1|cm3|cm3\+|cm4|cm4s|cm5)$/) {
+        applies = 0
+      } else {
+        # Unknown runtime filters are treated as possibly active for safety.
+        applies = 1
+      }
+      next
+    }
+    applies && lower ~ wanted { found = 1 }
+    END { exit(found ? 0 : 1) }
+  ' "${file}"
 }
 
 has_kms_overlay() {
-  grep -Eq '^[[:space:]]*dtoverlay=vc4-kms-v3d([,[:space:]]|$)' "$1"
+  local file
+  for file in "${config_files[@]}"; do
+    if file_has_effective_setting "${file}" '^[[:space:]]*dtoverlay=vc4-kms-v3d([,[:space:]]|$)'; then
+      return 0
+    fi
+  done
+  return 1
 }
 
 has_max_framebuffers() {
-  grep -Eq '^[[:space:]]*max_framebuffers[[:space:]]*=[[:space:]]*[2-9][0-9]*([[:space:]]*(#.*)?)?$' "$1"
+  local file
+  for file in "${config_files[@]}"; do
+    if file_has_effective_setting "${file}" '^[[:space:]]*max_framebuffers[[:space:]]*=[[:space:]]*[2-9][0-9]*([[:space:]]*(#.*)?)?$'; then
+      return 0
+    fi
+  done
+  return 1
 }
 
 while (( $# > 0 )); do
@@ -221,6 +372,10 @@ while (( $# > 0 )); do
       ;;
     --force)
       force_checks=1
+      shift
+      ;;
+    --yes)
+      assume_yes=1
       shift
       ;;
     -h|--help)
@@ -248,11 +403,13 @@ fragment_file="${boot_dir}/${FRAGMENT_NAME}"
 log "Installing ${PRODUCT_NAME}"
 log "Boot partition: ${boot_dir}"
 
+confirm_offline_target
 check_model
 
 temporary_config="$(mktemp "${boot_dir}/.config.txt.mzp351.XXXXXX")"
 strip_managed_block "${config_file}" "${temporary_config}"
-check_conflicts "${temporary_config}"
+collect_config_files "${temporary_config}"
+check_conflicts
 check_overlays "${temporary_config}"
 
 timestamp="$(date +%Y%m%d-%H%M%S)-$$"
@@ -272,10 +429,10 @@ temporary_fragment=""
 {
   printf '\n%s\n' "${MARKER_BEGIN}"
   printf '[all]\n'
-  if ! has_kms_overlay "${temporary_config}"; then
+  if ! has_kms_overlay; then
     printf 'dtoverlay=vc4-kms-v3d\n'
   fi
-  if ! has_max_framebuffers "${temporary_config}"; then
+  if ! has_max_framebuffers; then
     printf 'max_framebuffers=2\n'
   fi
   printf 'include %s\n' "${FRAGMENT_NAME}"

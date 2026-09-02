@@ -8,6 +8,11 @@ This repository does **not** replace the OS, install a custom kernel, use DKMS,
 or modify applications and user data. It configures drivers and Device Tree
 overlays already supplied by the operating system.
 
+Customer instructions: [English Quick Start](QUICK_START.md)
+
+Engineering must complete the [validation plan](docs/ENGINEERING-TEST-PLAN.md)
+before a public release.
+
 ## What the installer changes
 
 The installer:
@@ -34,6 +39,9 @@ The installer supports `/boot/firmware/config.txt` and the older
 `/boot/config.txt` location. It checks the actual overlay files instead of
 assuming a particular Linux distribution name.
 
+It also follows nested `include` directives and stops before writing when it
+finds FKMS, legacy DPI, another DPI panel, ADS7846, or SPI0 chip-select settings.
+
 ## Configure an existing SD card without booting it
 
 This mode changes only the small FAT boot partition. It does not mount or modify
@@ -42,7 +50,9 @@ the Linux root partition.
 ### Windows
 
 Insert the SD card after flashing it, then double-click `install-windows.cmd`.
-The tool automatically finds a mounted Raspberry Pi boot partition.
+The tool automatically finds a mounted Raspberry Pi boot partition, displays
+the selected drive information, and requires the customer to type `INSTALL`
+before writing.
 
 The equivalent PowerShell command is:
 
@@ -102,6 +112,9 @@ It does not collect passwords, Wi-Fi credentials, or user files.
 
 - Designed for Raspberry Pi Zero, Zero W/WH, and Zero 2 W/2 WH boards using
   current KMS-capable firmware and kernel overlays.
+- A customised Raspberry Pi OS can retain its software and settings. Other
+  distributions and custom kernels are unsupported until that exact release
+  appears in the tested compatibility list.
 - The display occupies 25 GPIOs. Existing DPI, ADS7846, or overlapping GPIO
   configuration is treated as a conflict and is never overwritten silently.
 - The original `mzp351hv00tr-new.txt` or `mzp351hv00tr-old.txt` installation
