@@ -168,6 +168,13 @@ cmp "${repo_dir}/config/mzp351hv00tr-kms.txt" "${fixture_pipe}/mzp351hv00tr.txt"
 
 offline_zip="${test_root}/MazerPi-MZP351-Offline-Setup.zip"
 "${repo_dir}/scripts/build-offline-package.sh" "${offline_zip}" >/dev/null
+(
+  cd -- "$(dirname -- "${offline_zip}")"
+  shasum -a 256 -c "$(basename -- "${offline_zip}").sha256" >/dev/null
+) || fail "Offline ZIP checksum file could not be verified from its release directory"
+if grep -Fq -- "${test_root}" "${offline_zip}.sha256"; then
+  fail "Offline ZIP checksum exposes a build-machine path"
+fi
 offline_extract="${test_root}/offline-package"
 unzip -q "${offline_zip}" -d "${offline_extract}"
 offline_root="${offline_extract}/MazerPi-MZP351-Offline-Setup"

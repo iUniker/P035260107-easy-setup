@@ -33,6 +33,9 @@ install -m 0644 "${repo_dir}/config/mzp351hv00tr-kms.txt" "${temporary_dir}/${pa
   zip -q -r -X "${output_path}" "${package_name}"
 )
 
-shasum -a 256 "${output_path}" > "${output_path}.sha256"
+(
+  cd -- "${output_dir}"
+  shasum -a 256 "${output_name}" > "${output_name}.sha256"
+)
 printf '%s\n' "${output_path}"
 printf '%s\n' "${output_path}.sha256"
