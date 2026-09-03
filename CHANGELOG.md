@@ -7,6 +7,9 @@
 - Renamed customer download artifacts and the temporary online installer file
   to use the iUniker brand.
 - Rebuilt the English and Chinese PDF guides and the website sharing image.
+- Corrected the visual centering of the numbered 1-4 badges in the English PDF.
+- Rendered the PDF's online installer command as one continuous text line and
+  labelled it explicitly as one command.
 
 ## 0.4.2-engineering.1
 

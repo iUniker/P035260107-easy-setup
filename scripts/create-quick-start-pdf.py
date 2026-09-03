@@ -13,6 +13,7 @@ from reportlab.lib.styles import ParagraphStyle, getSampleStyleSheet
 from reportlab.lib.units import inch
 from reportlab.platypus import (
     BaseDocTemplate,
+    Flowable,
     Frame,
     Image as RLImage,
     PageBreak,
@@ -51,9 +52,8 @@ ALIGNMENT_IMAGE = PRODUCT_IMAGE_DIR / "four-hole-alignment.jpg"
 PCB_BACK_IMAGE = PRODUCT_IMAGE_DIR / "display-pcb-back.jpg"
 
 ONLINE_COMMAND = (
-    "curl -fL --retry 3 --retry-all-errors https://raw.githubusercontent.com/iUniker/"
-    "P035260107-easy-setup/main/install.sh -o ~/iuniker-mzp351-install.sh && "
-    "sudo bash ~/iuniker-mzp351-install.sh --reboot"
+    "curl -fLo /tmp/i https://github.com/iUniker/"
+    "P035260107-easy-setup/raw/main/install.sh && sudo bash /tmp/i --reboot"
 )
 OFFLINE_URL = (
     "https://github.com/iUniker/P035260107-easy-setup/releases/download/"
@@ -143,6 +143,15 @@ def styles():
             leading=9.5,
             textColor=WHITE,
         ),
+        "badge_number": ParagraphStyle(
+            "BadgeNumber",
+            parent=base["BodyText"],
+            fontName="Helvetica-Bold",
+            fontSize=7.2,
+            leading=7.4,
+            alignment=TA_CENTER,
+            textColor=WHITE,
+        ),
         "code": ParagraphStyle(
             "Code",
             parent=base["Code"],
@@ -230,6 +239,39 @@ def p(text: str, style: str = "body") -> Paragraph:
     return Paragraph(text, S[style])
 
 
+class SingleLineCommandBox(Flowable):
+    """Draw a command as one PDF text line so copy/paste cannot inherit wraps."""
+
+    def __init__(self, command: str, height=0.34 * inch):
+        super().__init__()
+        self.command = command
+        self.height = height
+        self.width = 0
+
+    def wrap(self, avail_width, avail_height):
+        self.width = avail_width
+        return self.width, self.height
+
+    def draw(self):
+        font_name = "Courier-Bold"
+        horizontal_padding = 9
+        usable_width = self.width - (2 * horizontal_padding)
+        unit_width = self.canv.stringWidth(self.command, font_name, 1)
+        font_size = min(5.4, usable_width / unit_width)
+
+        self.canv.saveState()
+        self.canv.setFillColor(DARK)
+        self.canv.roundRect(0, 0, self.width, self.height, 3, fill=1, stroke=0)
+        self.canv.setFillColor(LIME)
+        self.canv.setFont(font_name, font_size)
+        self.canv.drawString(
+            horizontal_padding,
+            (self.height - font_size) / 2,
+            self.command,
+        )
+        self.canv.restoreState()
+
+
 def header_footer(canvas, doc):
     width, height = LETTER
     canvas.saveState()
@@ -289,7 +331,7 @@ def preflight_grid():
     ]
     cells = []
     for number, text in items:
-        badge = Table([[p(number, "table_head")]], colWidths=[0.24 * inch], rowHeights=[0.24 * inch])
+        badge = Table([[p(number, "badge_number")]], colWidths=[0.24 * inch], rowHeights=[0.24 * inch])
         badge.setStyle(
             TableStyle(
                 [
@@ -388,11 +430,13 @@ def method_one():
     header.setStyle(TableStyle([("VALIGN", (0, 0), (-1, -1), "MIDDLE"), ("LEFTPADDING", (0, 0), (-1, -1), 0), ("RIGHTPADDING", (0, 0), (-1, -1), 5), ("TOPPADDING", (0, 0), (-1, -1), 0), ("BOTTOMPADDING", (0, 0), (-1, -1), 3)]))
     content = [
         header,
-        p("Use when the Raspberry Pi can reach the Internet. Open Terminal on the Pi or connect by SSH, then run:", "body"),
+        p("Use when the Raspberry Pi can reach the Internet. Open Terminal on the Pi or connect by SSH.", "body"),
         Spacer(1, 4),
-        code_box(ONLINE_COMMAND),
+        p("<b>ONE COMMAND - paste the entire line below before pressing Enter.</b>", "small"),
+        Spacer(1, 3),
+        SingleLineCommandBox(ONLINE_COMMAND),
         Spacer(1, 4),
-        p("The complete script downloads before it runs. The installer then checks compatibility, backs up <b>config.txt</b>, installs the managed display settings, and reboots automatically.", "small"),
+        p("The command downloads the complete script before running it. If your PDF app changes the line when copying, copy the online command from the GitHub README instead.", "small"),
     ]
     outer = Table([[content]], colWidths=[5.28 * inch])
     outer.setStyle(TableStyle([("BACKGROUND", (0, 0), (-1, -1), PALE_2), ("BOX", (0, 0), (-1, -1), 0.7, BORDER), ("LEFTPADDING", (0, 0), (-1, -1), 10), ("RIGHTPADDING", (0, 0), (-1, -1), 10), ("TOPPADDING", (0, 0), (-1, -1), 9), ("BOTTOMPADDING", (0, 0), (-1, -1), 9)]))
@@ -485,7 +529,7 @@ def numbered_hardware_steps():
     ]
     rows = []
     for number, text in items:
-        badge = Table([[p(number, "table_head")]], colWidths=[0.25 * inch], rowHeights=[0.25 * inch])
+        badge = Table([[p(number, "badge_number")]], colWidths=[0.25 * inch], rowHeights=[0.25 * inch])
         badge.setStyle(
             TableStyle(
                 [
